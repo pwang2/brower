@@ -1,0 +1,13 @@
+{
+    "endpoint": {
+        "name": "template-app",
+        "target": "*"
+    },
+    "pkgMeta": {
+        "name": "template-app",
+        "main": ""
+    },
+    "dependencies": {
+
+    }
+}
