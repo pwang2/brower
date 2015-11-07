@@ -322,9 +322,9 @@ var publish = function(deps) {
 var resolveServer = function() {
     var app = express();
 
-    app.get('/q/:list/:id', function(req, res) {
+    app.get('/q/:list/:id?', function(req, res) {
         var list = req.params.list.split(',');
-        var id = req.params.id;
+        var id = req.params.id || 'bundleid';
 
         log(list);
 
