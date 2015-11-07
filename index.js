@@ -343,7 +343,7 @@ var resolveServer = function() {
         });
     });
 
-    var server = app.listen(8868, function() {
+    var server = app.listen(process.env.port || 8868, function() {
         var host = server.address().address;
         var port = server.address().port;
         log('Listening at http://%s:%s', host, port);
