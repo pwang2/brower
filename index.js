@@ -42,11 +42,11 @@ var extractCfg = function(argv) {
 
 //input should always with a valid version.
 //e.g.:v1.2.3 or 1.2.3
-var parseDeps = function(argv) {
-    var input = argv._;
+var parseDeps = function(input, spr) {
     var deps = {};
+    spr = spr || '#';
     input.forEach(function(item) {
-        var pair = item.split('#');
+        var pair = item.split(spr);
         var v = pair[1][0] === 'v' ? pair[0].substr(1) : pair[1];
         deps[pair[0]] = v;
     });
@@ -73,6 +73,14 @@ var log = function() {
     if (config.verbose) {
         return console.log.apply(null, [].slice.call(arguments, 0));
     }
+};
+
+var reducer = function(prev, cur) {
+    return prev.concat(cur);
+};
+
+var uniqer = function(item) {
+    return item.name + '#' + item.version;
 };
 
 var prepareInstall = function(deps) {
@@ -147,45 +155,43 @@ var cleanupMeta = function(obj) {
     };
 };
 
-var stackDeps = function(obj, layer, layerArray, cleanup) {
-    normalizeMeta(obj);
+var stackDeps = function(obj, cleanup) {
+    var layerArray = [];
+    var layer = 0;
 
-    var pkgMeta = obj.pkgMeta,
-        pkgDeps = obj.dependencies,
-        pkg = _.pick(pkgMeta, 'name', 'version', 'main', '_resolution');
+    (function s(obj, layer, cleanup) {
+        normalizeMeta(obj);
+        var pkgMeta = obj.pkgMeta,
+            pkgDeps = obj.dependencies,
+            pkg = _.pick(pkgMeta, 'name', 'version', 'main', '_resolution');
 
-    if (cleanup) {
-        cleanupMeta(obj);
-    } else {
-        if (pkg.name !== 'template-app') {
-            var resolveType = pkgMeta._resolution.type;
+        if (cleanup) {
+            cleanupMeta(obj);
+        } else {
+            if (pkg.name !== 'template-app') {
+                var resolveType = pkgMeta._resolution.type;
 
-            if (resolveType !== 'version') {
-                warn('[' + pkg.name + ']: ' + eol + resolveType + ' as bower resolution is not suggested');
+                if (resolveType !== 'version') {
+                    warn('[' + pkg.name + ']: ' + eol + resolveType + ' is not suggested');
+                }
+
+                //this is only need for cdn copy
+                pkg.canonicalDir = obj.canonicalDir;
             }
-
-            //this is only need for cdn copy
-            pkg.canonicalDir = obj.canonicalDir;
         }
-    }
-    pkg.pkgMeta = pkgMeta;
-    pkg.dependencies = pkgDeps;
+        pkg.pkgMeta = pkgMeta;
+        pkg.dependencies = pkgDeps;
 
-    layerArray[layer] = layerArray[layer] || [];
+        layerArray[layer] = layerArray[layer] || [];
 
-    _.mapObject(pkgDeps, function(dep) {
-        stackDeps(dep, layer + 1, layerArray, cleanup);
-    });
+        _.mapObject(pkgDeps, function(dep) {
+            s(dep, layer + 1, cleanup);
+        });
 
-    layerArray[layer].push(pkg);
-};
+        layerArray[layer].push(pkg);
+    }(obj, layer, cleanup));
 
-var reducer = function(prev, cur) {
-    return prev.concat(cur);
-};
-
-var uniqer = function(item) {
-    return item.name + '#' + item.version;
+    return layerArray;
 };
 
 /* Get flat list for entry components,
@@ -195,14 +201,12 @@ var uniqer = function(item) {
  * Meta file generation will reuse targetBowerMeta
  * by targeting to a specific dependency node.
  * This is an easier apporach for people with recursion difficulty
- * especially myself(pwang2)
- */
+ * especially myself(pwang2) */
 var datamining = function() {
     var input = path.resolve(tmpdirname, targetBowerMeta);
     return fs.readJsonAsync(input)
         .then(function(obj) {
-            var layerArray = [];
-            stackDeps(obj, 0, layerArray);
+            var layerArray = stackDeps(obj);
             var flatDep = _.chain(layerArray)
                 .reduceRight(reducer, [])
                 .uniq(uniqer)
@@ -217,7 +221,7 @@ var copyFiles = function(flatDep) {
         var distDir = publishDir + item.name + '/' + item.version + '/';
         var srcDir = item.canonicalDir;
 
-        var copyAllPromise = function() {
+        var copyAllFilePromise = function() {
             var copyPromises = _.map(item.main, function(f) {
                 var srcFile = path.resolve(srcDir, f);
                 return fs.copyAsync(srcFile, distDir + f);
@@ -226,7 +230,7 @@ var copyFiles = function(flatDep) {
         };
 
         return fs.ensureDirAsync(distDir)
-            .then(copyAllPromise);
+            .then(copyAllFilePromise);
     };
 
     var copyAllItemPromises = _.map(flatDep, copyItemPromise);
@@ -240,10 +244,8 @@ var generateMetas = function(flatDep) {
         _.each(flatDep, function(item) {
             banner(item.name + '#' + item.version);
 
-            var flatLayerArray = [];
             var metaDest = metaDir + item.name + '/' + item.version;
-
-            stackDeps(item, 0, flatLayerArray, true);
+            var flatLayerArray = stackDeps(item, true);
 
             var result = _.chain(flatLayerArray)
                 .reduceRight(reducer, [])
@@ -279,30 +281,140 @@ var cleanup = function() {
     fs.removeSync(tmpdirname);
 };
 
-//resolve mode: locate saved meta file and get filelist
-var resolve = function(deps) {
-    var rootMeta = require('./templates/meta.json');
+var traverse = function(name, version, cur, op, exitOnFind) {
+    var parentStack = [];
 
-    _.mapObject(deps, function(version, name) {
-        var meta = require(metaDir + name + '/' + version + '/meta.json');
-        rootMeta.dependencies[name] = meta;
+    return (function t(name, version, cur, op, exitOnFind) {
+        var ret = op(cur);
+        if (exitOnFind && ret) {
+            return ret;
+        }
+        var deps = cur.dependencies;
+        _.each(deps, function(v) {
+            parentStack.push(v);
+        });
+        while (true) {
+            var node = parentStack.pop();
+            if (!node) {
+                break;
+            }
+            return t(name, version, node, op, exitOnFind);
+        }
+    })(name, version, cur, op, exitOnFind);
+};
+
+var preShim = function(root, shimObj) {
+    _.each(shimObj, function(version, name) {
+        //this coud be replaced by require('/meta/name/version/meta.json');
+        //TODO:right now, it is full traverse as we need both find and traverse
+        var find = function(cur) {
+            if (cur.pkgMeta.name === name && cur.pkgMeta.version === version) {
+                return cur;
+            }
+        };
+
+        var replace = function(cur, shim) {
+            var cmeta = cur.pkgMeta,
+                smeta = shim.pkgMeta;
+            if (cmeta.name === smeta.name && cmeta.version !== smeta.version) {
+                cmeta.version = smeta.version;
+                cmeta.main = smeta.main;
+                cmeta.dependencies = smeta.dependencies;
+            }
+        };
+
+        var shimVersion = traverse(name, version, root, find, true);
+        banner("shim version found");
+        log(shimVersion);
+
+        //TODO: multiple shim coule be done in one traverse
+        traverse(name, version, root, function(cur) {
+            replace(cur, shimVersion);
+        });
     });
-    var layerArray = [];
 
-    stackDeps(rootMeta, 0, layerArray, true);
-    var result = _.chain(layerArray)
-        .reduceRight(reducer, [])
-        .uniq(uniqer)
-        .map(function(n) {
-            return n.main.map(function(item) {
-                return cdnPrefix + n.name + '/' + n.version + '/' + item;
+    return root;
+};
+
+var detectConflict = function(root) {
+    var depList = [];
+    (function flatenDeps(root, depList) {
+        var cur = root;
+        var dep = cur.dependencies;
+        _.each(dep, function(v, k) {
+            flatenDeps(v, depList);
+            depList.push({
+                name: k,
+                version: v.pkgMeta.version
             });
+        });
+    })(root, depList);
+
+    var conflicts = _.chain(depList)
+        .unique(uniqer)
+        .groupBy('name')
+        .filter(function(n) {
+            return n.length > 1;
         })
-        .reduce(reducer, [])
         ._wrapped;
 
-    log(result);
-    return result;
+    return conflicts;
+};
+
+//resolve mode: locate saved meta file and get filelist
+var resolve = function(deps, bundleId, shimObj) {
+    bundleId = bundleId || 'bundleId';
+    banner('shim passed');
+    log(shimObj);
+
+    var rootMeta = require('./templates/meta.json');
+
+    var linkPromises = [];
+    _.each(deps, function(version, name) {
+        var p = fs.readJsonAsync(metaDir + name + '/' + version + '/meta.json')
+            .then(function(meta) {
+                rootMeta.dependencies[name] = meta;
+                return rootMeta;
+            });
+        linkPromises.push(p);
+    });
+
+    return Promise.all(linkPromises)
+        .then(function() {
+            rootMeta = preShim(rootMeta, shimObj);
+            banner('root after shim');
+            log(JSON.stringify(rootMeta, null, 4));
+
+            var conflicts = detectConflict(rootMeta);
+            if (conflicts.length > 0) {
+                return {
+                    id: bundleId,
+                    bundle: deps,
+                    error: "conflict founded, you could pass resolution in the shim",
+                    conflicts: conflicts
+                };
+            }
+
+            var layerArray = stackDeps(rootMeta, true);
+            var result = _.chain(layerArray)
+                .reduceRight(reducer, [])
+                .uniq(uniqer)
+                .map(function(n) {
+                    return n.main.map(function(item) {
+                        return cdnPrefix + n.name + '/' + n.version + '/' + item;
+                    });
+                })
+                .reduce(reducer, [])
+                ._wrapped;
+
+            log(result);
+
+            return {
+                id: bundleId,
+                bundle: deps,
+                deps: result
+            };
+        });
 };
 
 //publish mode: publish dependencey file and meta from bower to cdn
@@ -322,39 +434,35 @@ var publish = function(deps) {
 var resolveServer = function() {
     var app = express();
 
-    app.get('/q/:list/:id?', function(req, res) {
+    app.get('/q/:list/:id?/shim/:shim?$', function(req, res) {
         var list = req.params.list.split(',');
         var id = req.params.id || 'bundleid';
+        var shim = decodeURIComponent(req.params.shim || '');
+        var shimObj = shim ? JSON.parse(shim) : {};
 
         log(list);
+        log(shimObj);
 
-        var deps = {};
-        list.forEach(function(item) {
-            var pair = item.split(':');
-            var v = pair[1][0] === 'v' ? pair[0].substr(1) : pair[1];
-            deps[pair[0]] = v;
-        });
-
-        var result = resolve(deps);
-
-        res.jsonp({
-            id: id,
-            deps: result
-        });
+        var deps = parseDeps(list, ':');
+        resolve(deps, id, shimObj)
+            .then(function(result) {
+                res.jsonp(result);
+            });
     });
 
-    var server = app.listen(process.env.port || 8868, function() {
+    var server = app.listen(process.env.port || 8868, '0.0.0.0', function() {
         var host = server.address().address;
         var port = server.address().port;
         log('Listening at http://%s:%s', host, port);
     });
 };
 
+
 config = extractCfg(argv);
-deps = parseDeps(argv);
+deps = parseDeps(argv._);
 
 if (config.resolve) {
-    resolve(deps);
+    resolve(deps, 'bundleid', {});
 } else if (config.serve) {
     resolveServer();
 } else {
@@ -364,6 +472,7 @@ if (config.resolve) {
 /* TODO:
  * Need to make file copy atomic!!
  *
+ * should give error if the resolved component does not exist
  * should let loader handle css, map, font, js， bootstrap even has less in main
  * should mini, gz, sourcemap
  * should be able to download packed script for all
