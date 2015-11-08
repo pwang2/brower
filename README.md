@@ -33,3 +33,10 @@ or
 
 `export port=43433; npm start`
 
+
+## Browser shim
+
+```
+http://localhost:8868/q/sal-components-valuation:0.0.9,foundation:5.5.2,bootstrap:3.3.5,d3:3.3.5/shim/%7B%22jquery%22%3A%221.11.1%22,%22d3%22%3A%223.3.5%22%7D
+```
+
