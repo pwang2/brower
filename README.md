@@ -37,6 +37,6 @@ or
 ## Browser shim
 
 ```
-http://localhost:8868/q/sal-components-valuation:0.0.9,foundation:5.5.2,bootstrap:3.3.5,d3:3.3.5/shim/%7B%22jquery%22%3A%221.11.1%22,%22d3%22%3A%223.3.5%22%7D
+http://localhost:8086/q/sal-components-take:0.0.14,sal-components-valuation:0.0.9,backbone:1.2.3,foundation:5.5.2,bootstrap:3.3.5,d3:3.3.5,jquery:1.11.1/iamacoolid/shim/jquery:1.11.1,d3:3.3.3
 ```
 

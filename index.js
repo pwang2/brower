@@ -2,9 +2,8 @@
 
 'use strict';
 var argv = require('minimist')(process.argv.slice(2)),
-    pmt = require('./lib/prompt.js'),
     parseDeps = require('./lib/parseDeps.js').parseDeps,
-    core = require('./lib/core.js');
+    core = require('./lib/core');
 
 var extractCfg = function(argv) {
     /*jshint maxcomplexity:8 */
@@ -16,18 +15,20 @@ var extractCfg = function(argv) {
     return config;
 };
 
+console.log(argv);
 var config = extractCfg(argv);
-var p = pmt.config(config);
-
 var deps = parseDeps(argv._);
-p.log('input:', deps);
-
-var app = core.setInput(deps, config);
 
 if (config.resolve) {
-    app.resolve(deps, 'bundleid', {});
+    var shim = argv.shim || '';
+    //force to show output when run in CLI
+    config.verbose = true;
+    //note here unlike the deps, we need to use , to seperate
+    //as this is a named parameter
+    var shimObj = !shim ? {} : parseDeps(shim.split(','));
+    core.resolve(deps, 'bundleid', shimObj, config);
 } else if (config.serve) {
-    app.serve();
+    core.serve(config);
 } else {
-    app.publish(deps);
+    core.publish(deps, config);
 }
