@@ -1,5 +1,5 @@
 {
     "registry":{
-        "search":["https://bower.herokuapp.com"]
+        "search":["http://bower.morningstar.com","https://bower.herokuapp.com"]
     }
 }
