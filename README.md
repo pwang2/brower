@@ -7,7 +7,7 @@
 e.g.:
 
 ```
-    ln -sf  ${pwd}/cdn  /Library/WebServer/Documents  ## Apache Root on my localhost  
+    ln -sf  $(pwd)/cdn  /Library/WebServer/Documents  ## Apache Root on my localhost  
 ```
 
 
