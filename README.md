@@ -14,7 +14,7 @@ e.g.:
 ### CLI Configurations
 * -v verbose logging
 * -o offline when running bower install. used for development only.
-* -r resolve mode. Writing version resolve to system output. //TODO: version resolution is not implemented yet.
+* -r resolve mode. Writing version resolve to system output. 
 * -s server mode. An Express server will be started to act as a dependency bundler
 * default without -o -s publish mode
 
@@ -32,7 +32,7 @@ When publishing multiple components, if there is unresolved version among them, 
 
 ### CLI Resolve
 ```
-./index.js  sal-components-gmb#1.0.9  -rv
+./index.js  sal-components-gmb#1.0.9 jquery#1.11.1 d3#3.5.6  -rv  --shim  jquery#1.11.1 d3#3.3.5
 ```
 
 ### Run Web Serve
