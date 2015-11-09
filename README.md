@@ -22,6 +22,10 @@ e.g.:
 
 
 ### CLI Publish
+
+TODO:
+When publishing multiple components, if there is unresolved version among them, it will fail.  
+
 ```
 ./index.js  sal-components-gmb#1.0.9  -v
 ```
@@ -41,7 +45,8 @@ e.g.:
 export port=8086 CDN_PREFIX=http://im.yourcdn.com/;  npm start
 ```
 
-### Publish
+### Web Publish
+TODO:
 If you pass in multiple versions of same library, The last one will win always.
 
 ```
@@ -49,14 +54,14 @@ http://localhost:8086/p/lodash:3.10.1,seajs:3.0.0,toastr:2.1.1,jquery:1.11.1,jqu
 ```
 
 
-### Unpublish
+### Web Unpublish
 If you pass in multiple versions of same library, The last one will win always.
 
 ```
 http://localhost:8086/unp/lodash:3.10.1,seajs:3.0.0,toastr:2.1.1,jquery:1.11.1,jquery:2.1.4
 ```
 
-### Browser Query
+### Web Query
 If you pass in multiple versions of same library, The last one will win always.
 
 ```
