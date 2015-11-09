@@ -5,10 +5,9 @@
 1. npm i
 1. link *cdn* folder in your working directory to you web server. This folder will created when publishing component.  If not, you could manually create one.
 e.g.:
+
 ```
-    wkdir=`pwd`
-    cd /Library/WebServer/Documents  ## Apache Root on my localhost
-    ln -sf  ${pwd}/cdn  Documents
+    ln -sf  ${pwd}/cdn  /Library/WebServer/Documents  ## Apache Root on my localhost  
 ```
 
 
@@ -50,7 +49,7 @@ http://localhost:8086/p/lodash:3.10.1,seajs:3.0.0,toastr:2.1.1,jquery:1.11.1,jqu
 ```
 
 
-## Unpublish
+### Unpublish
 If you pass in multiple versions of same library, The last one will win always.
 
 ```
