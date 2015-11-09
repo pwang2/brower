@@ -60,6 +60,9 @@ http://localhost:8086/unp/lodash:3.10.1,seajs:3.0.0,toastr:2.1.1,jquery:1.11.1,j
 If you pass in multiple versions of same library, The last one will win always.
 
 ```
-http://localhost:8086/q/backbone:1.2.3,foundation:5.5.2,bootstrap:3.3.5,d3:3.3.5,jquery:1.11.1/iamacoolid/shim/jquery:1.11.1,d3:3.3.3
+http://localhost:8086/q/backbone:1.2.3,foundation:5.5.2,bootstrap:3.3.5,d3:3.3.5,jquery:1.11.1/shim/jquery:1.11.1,d3:3.3.3?id=ID_YOU_LIKE
 ```
+
+### JSONP? 
+Yes! pass querystring &callback=cbname
 
