@@ -1,7 +1,7 @@
 {
   "name": "sfps",
   "version": "1.0.0",
-  "description": "",
+  "description": "A static CDN as the front end of your bower workflow.",
   "main": "index.js",
   "dependencies": {
     "bluebird": "^3.0.5",
@@ -19,6 +19,6 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "./index.js -s"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Peng Wang<pwang2@live.com>",
+  "license": "MIT"
 }
