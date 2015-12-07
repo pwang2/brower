@@ -1,32 +1,21 @@
 language: node_js
 sudo: required
-services:
-- docker
+
 node_js:
 - '0.12'
+
 cache:
   directories:
-#  - node_modules
+  - node_modules
+
 install:
-- npm install -g bower
 - npm install
+
 script:
 - npm test
+
 deploy:
   provider: heroku
   api_key:
     secure: XcMUQIVQPYczqw6bc54Chtby7fFhtRTF9xkfxYaqwH78DFONSHIwzBC40bhZ13tvBLgogcTgSpzCsqf6CpE5C9ZzQuMyPxakyl93QKMfzglUicEJX7EkGGtBwBiOJiu0U4L1eXM1ld2U7oKUHIHSmHxZfyhJdeBCumfm7Ix4O6rD7PFOYIqCwgRFLx6WreUB9ih+kruo5qcABTh0bfJ6W1DqJmKzRh+EVnjDtSQbRPyjus3iDbptrm9gh5gdbj74DhuGMOjhJr2O0VWu+Ny/yH+HA9Foji3fC790EvAGsLCORYrNlD6Wd1wsIajnhglOuQz6vPvxMhB5b7h+q82mOkuqg+KK3oNzFOjtoBCNHv371O/wMp4SlowUAM39a0OeLl6qL4EtisLiJMWYMXcDykD4eRaGtcuM0V6YmuxCe5PzwgqxaHhJCI+bZYOjSAiORAVJxWxHMSamX0xzvk9HUu7LRD5044qyyuNlujk8pinZ7dAnra8dDUThpUUv3M01d50JpkCCtJQwOQfgwtH1MVzJNLOgOugyCtJQHYnCpsbb2drDMJv4pN6F88XuoaFzCZc2QD6pB606U9v7m0ul6aNFCB58Nq54fdlYTkTd1ZUCWL45zaIGyo1vwNnOyq0y1pfEAqUnRKzjK05mLRltFbhpQhOienGDJqJJQK9grQQ=
   app: vast-headland-9951
-env:
-  global:
-  - COMMIT=${TRAVIS_COMMIT::8}
-  - secure: "lfY0qxGIFaRiWeBZNv8wnDfa1ZOFUpILcaI/8E2STUaGp0Wqha2bd/4hK1DU9+H1FANICFma8NsKz43yTI3luZSJGlDZY4cqtErdoe6SssfqOziNxYoxu3DC2ZvcB3TpN6ujKQqiW1dd3b5l7zaKGjrQtmbz5CiZpxzFeFUZquHOkXPhPY3P5junjhYyTtXZu88Ain9YcJ4Fg6Bu7UQRS8zBNtnk/sFZEAGqgjU6jkLydNNNnq7AGaLsQY6TSpt9ehoaRdMMXXlYI3qwm4Ufy+1nn48zCYKiMa1Qjf0kkmNHQu1DHzACR0tWFLfYdF4JAyDPr8MOElQ2hOW+hCzzZB5TG73hMO9D+2JrWZLZvlbLRzGy24sR05pCvdMsFtkSVqs13Az9SIiv/lKFBEnfWySp1s2R78tO5nNJpFcBYBwjDH3ibpv/lQQ9BGC3uKBQB3tnuEXbOc0MAZwNxt73dPcqaWh9RoK3je5DhmDMO3dMpyRs4mtukpNu5HJKsoELasrqZ1raqKRYhS0ZWtIbhDsNk4v+ElVIcFI331dUIcbxNiQi5kAgsyHMbM6rS+hqa6679jrFl8Z753Ja/GDKc3uuXOaw81Zm7vvg9NYrqdjlpDqZ3yupdHsNh/vzfxJcnhv4/44Fw4v7vV8Fkn2bVIOAj2l+EwVevuaSm8Lnbao="  #DOCKER_EMAIL
-  - secure: "hPIrYUD0SSdV0ukoGj6ZKKCtnqo7AOr5WzmbqAhKjR0j07ZRDfYmDJk0qrjnRxBMF/Ng3hC8ce6iMBl+ix/mvsS+twsXiQPzg+nD/+h4xv7dqJC8SY/6KIlCPCG5sF2Y2cFRt//DKXD6C71x4ttsU60bw7n3RD5yCeGnl/7neaf3JqSFAAtMjXNmkMAszLgffJmQn9Xul20VQZ0Cu/2VgBAML0Fz2vIvK1Dqk6bTp6jvsMgWBvv5uQEMeArdg2aCi323SojGpYqnUWT3b0Ufg54BNapsqoFljtCfYghq1miEYDJrUE/iypyHJojisKavL8mpI9x1IUd1cFeViuQe389t2IOe7oVsL7FqME42++YfAuDgwP53Skx1Gwj3+YOSIqCGQLUpiTVqXL5wULrGKAlqbnpwphUiG+DAJToRTfA/B+y1y9F4E+VptfUslUtgMyoyr0adT0yAzYZ/3n/zVSScLYQEWBMqXyAxbFuTK6Zd7P5moTrp7an/cyWcwzDm5pkSo4wmm9uhfKtn0GfaMCNH7Fg2neApOEYZMWS9NFMNOoILrC5d2BA26n8HRpnz9uFVfUuI/Kql+9EvYwNNJXIoYAqC5oVWXS5wMRm1lTkzVmcCckkHyPt2MWKS2rd97HLyy2neJ/gO0vU5Z9yzSzdVaVMrBxQc/PaSOjt0zMA=" #DOCKER_USERNAME
-  - secure: "pwODM3h0Al6osIlv8lkIiiIfAi7j+K/jvjFDhZeNhGqkwEwYhUTS3LK+Sluo0EFtFaiI0fR7xLIyCXwWb9MuILIY2FErpq+a1RR2UiJc6o57XGDYX2yCGfawZn4kN0yrPN9N9aviiVGQzhDdtOBkNQKkSDByKJ+SBC4vyhPey/OF+cw98N40EItg+XRWtOU1yUsrzfStKZOUT4dqAZ6cHC76rbAPpW9eMzsO7CNpt8wXLvRk5255DFjf7NyxOPK6+YZmFzdzaFwkZXgKsb/6pwItzLxEC/5Vn6Lr87+tbf/2GKNtORkx9R1wryskbsoxn78FgIE5J3Yvihrqefl3JwtjfPP1lIdKdqvMV8+G9p7T3aPxl5OthOUn6Qcb5zTGITYexGIowVSwekNJTDSpZPzwq9wVZJeufza/7g9sGEvj5/T/xKkJkBB05+qmNyED4emtW1tvMHcIQ7KaU5vChgoguKc/RbeojRV48hUWAq6K2gVx1kbP0JmWDZN3l6ltVwsKbKylH3LKbplybyKXTKpacg605brpSdOycM2rfZbStb07vu8/3Y2ngCmVkrXMmijYqArxUMw7FqdedzR7fPgbT7mqlCiBIxlZTHbwHsm1ebgKcS5z9eq1SS1DGXgRyATOBzgKRZFZ7JOOCwacD3wtlXFGpDLU3OshjyzJUJM=" #DOCKER_PASS
-after_success:
-    # docker automatic build is in use
-    #- docker login -e $DOCKER_EMAIL -u $DOCKER_USERNAME -p $DOCKER_PASS
-    #- export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
-    #- docker build -t $TRAVIS_REPO_SLUG:$COMMIT .
-    #- docker tag $TRAVIS_REPO_SLUG:$COMMIT $TRAVIS_REPO_SLUG:$TAG
-    #- docker push $TRAVIS_REPO_SLUG
