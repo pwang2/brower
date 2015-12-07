@@ -75,5 +75,5 @@ http://localhost:8868/q/angular-cookies:1.3.5,jquery-ui:1.11.4?overwrite={%22ang
 ### Run Test
 `npm test`
 
-(For Windows, please use set `CDN_PHYSICAL_PATH=.tmp && ./node_modules/.bin/mocha ./tests/**/*.js --timeout 20000`
+(For Windows, please run `npm run wintest`)
 
