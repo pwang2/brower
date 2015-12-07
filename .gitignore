@@ -1,5 +1,5 @@
 node-debug.log
 node_modules
 npm-debug.log
-cdn
-.tmp
+cdn/
+.tmp/
