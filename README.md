@@ -1,4 +1,7 @@
-## Bower Static Resource CDN
+## Intro
+[![Build Status](https://travis-ci.org/pwang2/brower.svg?branch=master)](https://travis-ci.org/pwang2/brower)
+
+Bower workflow in your browser. This project is still under active development. 
 
 ### Get started
 
@@ -23,16 +26,13 @@ e.g.:
 
 ### CLI Publish
 
-TODO:
-When publishing multiple components, if there is unresolved version among them, it will fail.  
-
 ```
-./index.js  sal-components-gmb#1.0.9  -v
+./index.js  foundation#5.5.2  -v
 ```
 
 ### CLI Resolve
 ```
-./index.js  sal-components-gmb#1.0.9 jquery#1.11.1 d3#3.5.6  -rv  --shim  jquery#1.11.1 d3#3.3.5
+./index.js  jquery#1.11.1 foundation#5.5.2  -rv  --shim  jquery#1.11.1
 ```
 
 ### Run Web Serve
@@ -46,28 +46,34 @@ export port=8086 CDN_PREFIX=http://im.yourcdn.com/;  npm start
 ```
 
 ### Web Publish
-TODO:
-If you pass in multiple versions of same library, The last one will win always.
 
 ```
 http://localhost:8086/p/lodash:3.10.1,seajs:3.0.0,toastr:2.1.1,jquery:1.11.1,jquery:2.1.4
 ```
 
-
 ### Web Unpublish
-If you pass in multiple versions of same library, The last one will win always.
 
 ```
 http://localhost:8086/unp/lodash:3.10.1,seajs:3.0.0,toastr:2.1.1,jquery:1.11.1,jquery:2.1.4
 ```
 
 ### Web Query
-If you pass in multiple versions of same library, The last one will win always.
 
 ```
 http://localhost:8086/q/backbone:1.2.3,foundation:5.5.2,bootstrap:3.3.5,d3:3.3.5,jquery:1.11.1/shim/jquery:1.11.1,d3:3.3.3?id=ID_YOU_LIKE
 ```
+*in Query mode, ~ is supported*
 
-### JSONP? 
+### JSONP?
 Yes! pass querystring &callback=cbname
+
+### Others
+
+* enforce loading order
+http://localhost:8868/q/angular-cookies:1.3.5,jquery-ui:1.11.4?overwrite={%22angular%22:%22jquery%22}
+
+### Run Test
+`npm test`
+
+(For Windows, please use set `CDN_PHYSICAL_PATH=.tmp && ./node_modules/.bin/mocha ./tests/**/*.js --timeout 20000`
 

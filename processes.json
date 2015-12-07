@@ -1,0 +1,20 @@
+{
+  "apps" : [{
+    "name"        : "web-app",
+    "script"      : "index.js",
+    "args"        : ["-s"],
+    "merge_logs"  : false,
+    "log_date_format":"YYYY-MM-DD HH:mm:ss Z",
+    "max_memory_restart":"100M",
+    "instances"   : 4,
+    "exec_mode"   : "cluster",
+    "env": {
+        "NODE_ENV": "production",
+        "PORT"    : 8868
+    }
+  },{
+    "name"       : "prefetch-app",
+    "script"     : "prefetch.js",
+    "exec_mode"  : "fork"
+  }]
+}

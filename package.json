@@ -2,23 +2,42 @@
   "name": "sfps",
   "version": "1.0.0",
   "description": "A static CDN as the front end of your bower workflow.",
+  "repository": "https://github.com/pwang2/brower",
   "main": "index.js",
   "dependencies": {
-    "bluebird": "^3.0.5",
-    "bower": "^1.6.5",
+    "bindings": "^1.2.1",
+    "bluebird": "^3.0.6",
+    "bower": "^1.6.8",
     "chalk": "^1.1.1",
+    "clean-css": "^3.4.7",
+    "cron": "^1.0.9",
     "express": "^4.13.3",
     "extend": "^3.0.0",
     "fs-extra": "^0.26.2",
+    "less": "^2.5.3",
     "minimist": "^1.2.0",
+    "mout": "^0.11.1",
+    "node-sass": "^3.4.2",
+    "semver": "^5.0.3",
     "tmp": "0.0.28",
+    "uglify-js": "^2.6.0",
     "underscore": "^1.8.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "chakram": "^1.2.1",
+    "harmony-reflect": "^1.4.2",
+    "mocha": "^2.3.4",
+    "sync-exec": "^0.6.2"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "./index.js -s"
+    "jshint":"node ./node_modules/.bin/jshint . || true",
+    "test": "CDN_PHYSICAL_PATH=.tmp quiet=true node ./node_modules/.bin/mocha tests/**/*.js --timeout 20000 ",
+    "start": "node ./index.js -s"
+  },
+  "engine-strict": true,
+  "engines": {
+    "node": "0.12.8"
   },
   "author": "Peng Wang<pwang2@live.com>",
-  "license": "MIT"
+  "license": "Apache-2.0"
 }

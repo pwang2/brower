@@ -2,7 +2,7 @@
 
 'use strict';
 var argv = require('minimist')(process.argv.slice(2)),
-    parseDeps = require('./lib/parseDeps.js').parseDeps,
+    parseDeps = require('./lib/util/parseDeps.js').parseDeps,
     core = require('./lib/core');
 
 var extractCfg = function(argv) {
@@ -12,23 +12,34 @@ var extractCfg = function(argv) {
     config.verbose = !!argv.verbose || !!argv.v;
     config.resolve = !!argv.resolve || !!argv.r;
     config.serve = !!argv.serve || !!argv.s;
+    config.publish = !!argv.publish || !!argv.p;
+    config.unpublish = !!argv.unpublish || !!argv.u;
     return config;
 };
 
 console.log(argv);
 var config = extractCfg(argv);
-var deps = parseDeps(argv._);
 
-if (config.resolve) {
+//force to show output when run in CLI
+var _v = config.verbose;
+config.verbose = true;
+
+if (config.unpublish) {
+    var deps = parseDeps(argv._, '#').deps;
+    core.unpublish(deps, config);
+} else if (config.resolve) {
     var shim = argv.shim || '';
-    //force to show output when run in CLI
-    config.verbose = true;
-    //note here unlike the deps, we need to use , to seperate
-    //as this is a named parameter
-    var shimObj = !shim ? {} : parseDeps(shim.split(','));
-    core.resolve(deps, 'bundleid', shimObj, config);
+    var inputObj = parseDeps(argv._, '#').deps;
+    //unlike deps, shim is a named parameter
+    var shimObj = !shim ? {} : parseDeps(shim.split(','), '#', 'q');
+    core.resolve(inputObj.deps, 'bundleid', shimObj.deps, config);
 } else if (config.serve) {
+    config.verbose = _v;
     core.serve(config);
 } else {
-    core.publish(deps, config);
+    var deps = parseDeps(argv._, '#', 'p').deps;
+    core.publish(deps, config)
+        .finally(function() {
+            process.exit(); //send signal to cluster to disconnect
+        });
 }
