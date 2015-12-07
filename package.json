@@ -2,7 +2,10 @@
   "name": "sfps",
   "version": "1.0.0",
   "description": "A static CDN as the front end of your bower workflow.",
-  "repository": "https://github.com/pwang2/brower",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/pwang2/brower.git"
+  },
   "main": "index.js",
   "dependencies": {
     "bindings": "^1.2.1",
@@ -26,12 +29,14 @@
   "devDependencies": {
     "chakram": "^1.2.1",
     "harmony-reflect": "^1.4.2",
+    "jshint": "^2.8.0",
     "mocha": "^2.3.4",
     "sync-exec": "^0.6.2"
   },
   "scripts": {
-    "jshint":"node ./node_modules/.bin/jshint . || true",
-    "test": "CDN_PHYSICAL_PATH=.tmp quiet=true node ./node_modules/.bin/mocha tests/**/*.js --timeout 20000 ",
+    "jshint": "node ./node_modules/.bin/jshint . && exit 0",
+    "test": "CDN_PHYSICAL_PATH=.tmp quiet=true ./node_modules/.bin/mocha tests/**/*.js --timeout 20000 ",
+    "wintest": "set CDN_PHYSICAL_PATH=.tmp && set quiet=true && \"./node_modules/.bin/mocha\" tests/**/*.js --timeout 30000 ",
     "start": "node ./index.js -s"
   },
   "engine-strict": true,
