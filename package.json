@@ -37,7 +37,7 @@
     "jshint": "node ./node_modules/.bin/jshint . && exit 0",
     "test": "CDN_PHYSICAL_PATH=.tmp quiet=true ./node_modules/.bin/mocha tests/**/*.js --timeout 20000 ",
     "wintest": "set CDN_PHYSICAL_PATH=.tmp&&set quiet=true&&\"./node_modules/.bin/mocha\" tests/**/*.js --timeout 30000",
-    "start": "node ./index.js -s"
+    "start": "node ./index.js -sv"
   },
   "engine-strict": true,
   "engines": {
