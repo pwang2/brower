@@ -13,6 +13,8 @@ git config --global url."https://".insteadOf git://
 VOLUME /data/cdn
 ENV CDN_PHYSICAL_PATH="/data/cdn"
 
+EXPOSE 8868
+
 ENTRYPOINT ["pm2"]
 CMD ["start", "processes.json", "--no-daemon"]
 
