@@ -3,6 +3,7 @@
 'use strict';
 var Promise = require('bluebird'),
     CronJob = require('cron').CronJob,
+    _ = require('underscore'),
     fs = require('fs-extra'),
     pVault = require('./lib/util/processVault.js'),
     readdir = Promise.promisify(fs.readdir),
@@ -18,7 +19,13 @@ cluster.start();
 var prefetchVersions = function() {
     return readdir(metaDir)
         .then(function(dirs) {
-            return cluster.enqueue(dirs);
+            var inputs = _.map(dirs, function(dir) {
+                var path = j(metaDir, dir, 'regname.txt');
+                return fs.readFileSync(path, {
+                    encoding: 'utf8'
+                });
+            });
+            return cluster.enqueue(inputs);
         });
 };
 

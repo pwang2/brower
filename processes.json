@@ -10,6 +10,7 @@
     "exec_mode"   : "cluster",
     "env": {
         "NODE_ENV": "production",
+        "CDN_PHYSICAL_PATH":"/Users/pwang2/cdn",
         "PORT"    : 8868
     }
   },{
