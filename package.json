@@ -31,6 +31,7 @@
     "harmony-reflect": "^1.4.2",
     "jshint": "^2.8.0",
     "mocha": "^2.3.4",
+    "pm2": "^0.15.10",
     "sync-exec": "^0.6.2"
   },
   "scripts": {

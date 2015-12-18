@@ -17,13 +17,23 @@ var cluster = pVault.prefetchCluster;
 cluster.start();
 
 var prefetchVersions = function() {
+    var isdir = function(dir) {
+        return fs.statSync(dir).isDirectory();
+    };
+
     return readdir(metaDir)
-        .then(function(dirs) {
+        .then(function(list) {
+            var dirs = _.filter(list, function(d) {
+                return isdir(j(metaDir, d));
+            });
             var inputs = _.map(dirs, function(dir) {
                 var path = j(metaDir, dir, 'regname.txt');
-                return fs.readFileSync(path, {
-                    encoding: 'utf8'
-                });
+                return {
+                    regname: fs.readFileSync(path, {
+                        encoding: 'utf8'
+                    }),
+                    name: dir
+                };
             });
             return cluster.enqueue(inputs);
         });
