@@ -2,7 +2,7 @@
   "apps" : [{
     "name"        : "web-app",
     "script"      : "index.js",
-    "args"        : ["-s"],
+    "args"        : ["-sv"],
     "merge_logs"  : false,
     "log_date_format":"YYYY-MM-DD HH:mm:ss Z",
     "max_memory_restart":"100M",
@@ -13,9 +13,6 @@
         "CDN_PHYSICAL_PATH":"/Users/pwang2/cdn",
         "PORT"    : 8868
     }
-  },{
-    "name"       : "prefetch-app",
-    "script"     : "prefetch.js",
-    "exec_mode"  : "fork"
-  }]
+  }
+  ]
 }

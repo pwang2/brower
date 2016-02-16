@@ -40,7 +40,7 @@ var prefetchVersions = function() {
 };
 
 var job = new CronJob({
-    cronTime: '22 * * * * ',
+    cronTime: '20 * * * * ',
     onTick: function() {
         console.log('prefetcher versions for tidle match..');
         prefetchVersions();
