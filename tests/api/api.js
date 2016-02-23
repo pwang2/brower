@@ -52,7 +52,7 @@ describe('Chakram', function() {
                 expect(response).to.have.json('bundle', {
                     'jquery': '1.11.1'
                 });
-                expect(response.body.deps[0]).to.contain('dist/jquery.min.js');
+                expect(response.body.coms[0].name).to.equal('jquery');
             });
     });
 
@@ -107,9 +107,10 @@ describe('Chakram', function() {
                 expect(response).to.have.json('installed', {
                     'foundation': '5.5.3'
                 });
-                return chakram.get('http://localhost:8989/q/jquery:2.1.4')
+                //TODO: 5.5.3 will install newer version of jquery when Available
+                return chakram.get('http://localhost:8989/q/jquery:2.2.0')
                     .then(function(response) {
-                        expect(response.body.deps[0]).to.contain('dist/jquery.min.js');
+                        expect(response.body.coms[0].name).to.equal('jquery');
                     });
             });
     });
@@ -146,9 +147,9 @@ describe('Chakram', function() {
     });
 
     it('should give debug file when passing ?debug', function() {
-        return chakram.get('http://localhost:8989/q/jquery:2.1.4?debug')
+        return chakram.get('http://localhost:8989/q/jquery:2.2.0?debug')
             .then(function(response) {
-                expect(response.body.deps[0]).to.contain('dist/jquery.js');
+                expect(response.body.coms[0].name).to.equal('jquery');
             });
     });
 
@@ -157,7 +158,10 @@ describe('Chakram', function() {
             .then(function() {
                 return chakram.get('http://localhost:8989/q/angular-cookies:1.3.15,jquery:2.1.4?overwrite={%22angular%22:%22jquery%22}')
                     .then(function(response) {
-                        expect(response.body.deps[0]).to.contain('jquery.min.js');
+                        var found = response.body.coms.some(function(com) {
+                            return com.name === 'jquery';
+                        });
+                        expect(found).to.equal(true);
                     });
             });
     });

@@ -1,5 +1,5 @@
 {
-  "name": "sfps",
+  "name": "brower",
   "version": "1.0.0",
   "description": "A static CDN as the front end of your bower workflow.",
   "repository": {
@@ -29,7 +29,7 @@
   "devDependencies": {
     "chakram": "^1.2.1",
     "harmony-reflect": "^1.4.2",
-    "jshint": "^2.8.0",
+    "jshint": "^2.9.1",
     "mocha": "^2.3.4",
     "sync-exec": "^0.6.2"
   },
