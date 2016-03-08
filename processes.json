@@ -11,6 +11,7 @@
     "env": {
         "NODE_ENV": "production",
         "CDN_PHYSICAL_PATH":"../cdn",
+        "ZK_ENSEMBLE":" 192.168.99.100:32803,192.168.99.100:32800,192.168.99.100:32797",
         "PORT"    : 8868
     }
   }
